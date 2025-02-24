@@ -1,10 +1,16 @@
 # ScaleDraw
-One Scaleform movie to rule them all!
+One Scaleform movie to rule them all! Say good bye to common Draw Natives, heavy and slow, increasing your resmon CPU time! Say Hello to __ScaleDraw__.
 
 This repository is licensed under CC BY-NC-SA 4.0
 # [![License](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 ### This Lua library allows you to create and manipulate scaleform-based shapes in FiveM, such as rectangles, circles, polygons, and sprites. It provides an easy-to-use API for drawing 2D elements with customizable properties.
+
+![image](https://github.com/user-attachments/assets/beee8893-1fbb-4775-b49a-a31be98ae068)
+
+https://github.com/user-attachments/assets/e594dcb4-7ce3-4f6c-b334-254a360fa904
+
+
 
 ## 🚀 Features
 
