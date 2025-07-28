@@ -87,6 +87,49 @@ function CreateSprite(txd, txn, x, y, w, h, r, g, b, a)
     return polygons
 end
 
+---Creates a new Textfield object in the scaleform and returns its handle
+---@param label string the texture
+---@param x number the x coordinate in screen format (0.0 to 1.0)
+---@param y number the y coordinate in screen format (0.0 to 1.0)
+---@param fontSize number FontSize (default is 13)
+---@param alignment number the text alignment (0 = left, 1 = center, 2 = right)
+---@param font string the font to be used (default $Font2 check https://forum.cfx.re/t/using-html-images-and-blips-in-scaleform-texts/553298/2 for all ingame fonts)
+---@param outline boolean toggle the text outline
+---@param shadow boolean toggle the text shadow
+---@return number the rectangle index used to edit its properties
+function CreateText(label, x,y, fontSize, alignment, font, outline, shadow)
+    -- get correct coords
+    if fontSize == nil then fontSize = 13 end
+    if alignment == nil then alignment = 0 end
+    if font == nil then font = "$Font2" end
+    if outline == nil then outline = true end
+    if shadow == nil then shadow = false end
+    local vec = ConvertScreenCoordsToScaleformCoords(x, y)
+    scaleform:CallFunction("DRAW_TEXT", label, vec.x, vec.y, fontSize, alignment, font, outline, shadow)
+    polygons = polygons + 1
+    return polygons
+end
+
+---Updates an existing Textfield object in the scaleform and returns its handle
+---@param handle number the textfield handle
+---@param label string the texture
+---@param x number the x coordinate in screen format (0.0 to 1.0)
+---@param y number the y coordinate in screen format (0.0 to 1.0)
+---@param fontSize number FontSize (default is 13)
+---@param alignment number the text alignment (0 = left, 1 = center, 2 = right)
+---@param font string the font to be used (default $Font2 check https://forum.cfx.re/t/using-html-images-and-blips-in-scaleform-texts/553298/2 for all ingame fonts)
+---@param outline boolean toggle the text outline
+---@param shadow boolean toggle the text shadow
+function UpdateText(handle, label, x,y, fontSize, alignment, font, outline, shadow)
+    if fontSize == nil then fontSize = 13 end
+    if alignment == nil then alignment = 0 end
+    if font == nil then font = "$Font2" end
+    if outline == nil then outline = true end
+    if shadow == nil then shadow = false end
+    local vec = ConvertScreenCoordsToScaleformCoords(x, y)
+    scaleform:CallFunction("UPDATE_TEXT", handle, label, vec.x, vec.y, fontSize, alignment, font, outline, shadow)
+end
+
 ---Updates a created handle position (can be called on frame)
 ---@param handle number the created item's handle
 ---@param x number the x coordinate in screen format (0.0 to 1.0)
@@ -175,7 +218,6 @@ function ClearAll()
 end
 
 Citizen.CreateThread(function()
-    scaleform = Scaleform.RequestWidescreen("DRAW_ALL")
     while true do
         Wait(0)
         if scaleform:IsLoaded() then
@@ -184,10 +226,38 @@ Citizen.CreateThread(function()
     end
 end)
 
+AddEventHandler('onClientResourceStop', function(res)
+    if res == GetCurrentResourceName() then
+        scaleform:Dispose()
+    end
+end)
+
+AddEventHandler('onClientResourceStart', function(res)
+    if res == GetCurrentResourceName() then
+        if scaleform == nil or scaleform.handle == 0 then
+            scaleform = Scaleform.RequestWidescreen("DRAW_ALL")
+        end
+    end
+end)
+
+-- RegisterCommand("debug", function(a,b,c)
+--     local handle = CreateText("", 0.5, 0.8, 25, 1, "$Font2", true, false)
+--     local text = "this is a test"
+--     local current = ""
+
+--     for i = 1, #text do
+--         current = string.sub(text, 1, i)
+--         UpdateText(handle, current, 0.5, 0.8, 25, 1, "$Font2", true, false)
+--         Wait(100)
+--     end
+-- end, true)
+
 exports('CreateRect', CreateRect)
 exports('CreateCircle', CreateCircle)
 exports('CreatePoly', CreatePoly)
 exports('CreateSprite', CreateSprite)
+exports('CreateText', CreateText)
+exports('UpdateText', UpdateText)
 exports('SetItemPosition', SetItemPosition)
 exports('SetItemSize', SetItemSize)
 exports('SetItemScale', SetItemScale)
